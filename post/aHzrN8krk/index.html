@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>测试 | Dudd_的博客</title>
+<title>关于SpringBoot日期返回值类型转化的问题 | Dudd_的博客</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,16 +18,11 @@
 
 
 
-    <meta name="description" content="测试
-1111111111111111
+    <meta name="description" content="参考资料：
+https://blog.csdn.net/weixin_44906271/article/details/105772304
 
-title: '测试'
-date: 2021-02-24 16:18:00
-tags: []
-published: true
-hideInList: false
-feature:
-isTop: fa..." />
+返回实体类时
+在对应实体类的时间字段上面加上如下注解，那么返回的时间格式就自动转换成了需要的格式了..." />
     <meta name="keywords" content="" />
   </head>
   <body>
@@ -105,23 +100,52 @@ isTop: fa..." />
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">测试</h2>
-            <div class="post-date">2021-02-24</div>
+            <h2 class="post-title">关于SpringBoot日期返回值类型转化的问题</h2>
+            <div class="post-date">2021-03-22</div>
             
             <div class="post-content" v-pre>
-              <p>测试<br>
-1111111111111111</p>
-<hr>
-<p>title: '测试'<br>
-date: 2021-02-24 16:18:00<br>
-tags: []<br>
-published: true<br>
-hideInList: false<br>
-feature:</p>
-<h2 id="istop-false">isTop: false</h2>
+              <p>参考资料：</p>
+<p>https://blog.csdn.net/weixin_44906271/article/details/105772304</p>
+<ol>
+<li>返回实体类时<br>
+在对应实体类的时间字段上面加上如下注解，那么返回的时间格式就自动转换成了需要的格式了。</li>
+</ol>
+<pre><code class="language-java">import com.fasterxml.jackson.annotation.JsonFormat;
+...
+    @JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;)
+    private LocalDateTime createTime;
+</code></pre>
+<p>注意：这种方式可能在返回时，时间不正确，可以尝试加上timezone=“GMT+8”</p>
+<pre><code class="language-java">@JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;,timezone=&quot;GMT+8&quot;)
+</code></pre>
+<p>同时可以在配置文件中设置全局配置，这样不用在每个实体类时间字段上都加上注解了，properties配置如下：</p>
+<pre><code class="language-java">//时间类型会直接返回格式时间
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=Asia/Shanghai
+</code></pre>
+<p>返回MAP时，在sql语句里面可以使用 DATE_FORMAT函数直接把时间格式转换：</p>
+<pre><code class="language-java">SELECT DATE_FORMAT( b.book_start_time,'%Y-%m-%d %H:%i:%s') book_start_time
+</code></pre>
+<p>这时返回的时间格式就可以直接用了</p>
+<pre><code class="language-java">&quot;book_start_time&quot;: &quot;2020-02-20 10:16:00&quot;,
+&quot;book_status&quot;: 0,
+&quot;parking_lot_address&quot;: &quot;xx区&quot;,
+&quot;id&quot;: 27,
+&quot;book_parkinglot&quot;: &quot;xxx停车场&quot;,
+&quot;book_end_time&quot;: &quot;2020-02-21 10:16:00&quot;
+</code></pre>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://nieaojie.github.io/post/WP3gsNVpY/">
+                  <h3 class="post-title">
+                    Java Lambda 表达式
+                  </h3>
+                </a>
+              </div>
             
 
             
